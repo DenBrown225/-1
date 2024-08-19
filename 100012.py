@@ -14,7 +14,6 @@ import base64
 import requests
 import random
 from PIL import Image
-import matplotlib.pyplot as plt
 import setuptools
 # Устанавливаем политику для Windows
 asyncio.set_event_loop_policy(WindowsSelectorEventLoopPolicy())
