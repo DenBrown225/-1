@@ -1,7 +1,8 @@
 import asyncio
 from asyncio import WindowsSelectorEventLoopPolicy
 import speech_recognition as sr
-
+import os
+import torch
 import tkinter as tk
 from tkinter import *
 from tkinter import ttk
@@ -12,7 +13,6 @@ import base64
 import requests
 import random
 from PIL import Image
-
 import customtkinter  # <- import the CustomTkinter module
 import customtkinter as ctk
 
@@ -26,9 +26,46 @@ import random
 import tkinter as tk
 from tkinter import filedialog
 import pygame
-
+import wave
 # Инициализация Pygame
 pygame.mixer.init()
+def say2():        
+    sav1 = "12345.wav"
+    device = torch.device('cpu')
+    torch.set_num_threads(4)
+
+# Задаем имя файла модели
+    local_file = 'model.pt'
+
+# Загружаем модель, если она еще не загружена
+    if not os.path.isfile(local_file):
+        torch.hub.download_url_to_file('https://models.silero.ai/models/tts/ru/v4_ru.pt',
+                                        local_file)
+
+# Загружаем модель TTS
+    model = torch.package.PackageImporter(local_file).load_pickle("tts_models", "model")
+    model.to(device)
+
+# Пользовательский ввод текста
+
+    example_text = "Да сэр?"
+    sample_rate = 24000
+    speaker = 'eugene'
+
+# Указываем имя файла для сохранения
+         # Здесь задайте желаемое имя файла
+
+# Генерируем аудио и сохраняем в WAV с указанным именем
+    audio_path1 = model.save_wav(text=example_text,
+                                speaker=speaker,
+                                sample_rate=sample_rate,
+                                audio_path=sav1
+                                 ) 
+    
+    
+                
+threading.Thread(target=say2, daemon=True).start()
+
 c = 0
 def toggle_rectangle():
     global b
@@ -36,79 +73,135 @@ def toggle_rectangle():
     global moving_down
     global c
     global b2
+    global b4
     c +=1
     
-    
-    if c % 2 != 0:
-        a = 110
-        b = -49
-# Создаем слайдер
-        a1 = 325
+    if c % 2 != 0 :
+        if c > 1:
+            b4 = -5
+            button54.place(x=a4, y=b4)
+        else:
+            b4 = 0
+            button54.place(x=a4, y=b4)
         
-        b1 = -49
-        
-        
-        move_rectangle_down3()
         move_rectangle_down()
-        move_rectangle_down2()
-        move_rectangle_downs()
         
-        b2 += 5
-        b += 5
+        
         
     else:# Двигаем прямоугольник вверх
-        
-        move_rectangle_up2()
+        b4 = 150
+        button54.place(x=a4, y=b4)
         move_rectangle_up() 
-        move_rectangle_up3()
-        move_rectangle_ups()
-        b2 -= 5
-        b -= 5
-        b1 -= 5
+        
 def move_rectangle_down():
+    global button2
+    global slider
+    global button3
+    global rectangle_y2
+    global button2
+    global slider
+    global rectangle_y2
+    global c5
+    global b2
+    global a2
+    global rectangle_y3
+    global b 
+    global a
+    global b1
+    global a1
+    global b2
+    global a2
+    global b3
+    global a4
+    global b4
+    global button54
     button54.configure(state='disabled')
     global rectangle_y
-    if rectangle_y < 0:  # Проверка на достижение нижнего предела
-        canvas.move(rectangle, 0, 5)  # Двигаем прямоугольник вниз
+    
+    if rectangle_y < 0:
+        b2 += 5
+        b1 += 5
+        b += 5
+        b3 += 5
+        # Проверка на достижение нижнего предела
+        canvas.move(rectangle, 0, 5)
+        slider.place(x=a, y=b)  # Двигаем слайдер вниз
+        button2.place(x=a1, y=b1)
+        button34.place(x=a3, y=b3)
+        b4 += 5
+        button54.place(x=a4, y=b4)
+        canvas.move(rectangle2, 0, 5)
+        canvas.move(rectangle3, 0, 5)
+        # Двигаем прямоугольник вверх
         rectangle_y += 5
+        rectangle_y2 += 5
+        rectangle_y3 += 5
+        # Двигаем прямоугольник вниз
+        button3.place(x=a2, y=b2)
+        
         # Запланировать следующий шаг анимации
-        root.after(20, move_rectangle_down)  # Каждый 20 мс продолжаем движение
+        root.after(25, move_rectangle_down)  # Каждый 20 мс продолжаем движение
     else:
         moving_down = False  # После достижения нижнего предела переключаем направление
+        b4 = 150
+        button54.place(x=a4, y=b4)
         button54.configure(state='normal')
 
 def move_rectangle_up():
-    button54.configure(state='disabled')
-    global rectangle_y
-    if rectangle_y > -151:  # Проверка на достижение верхнего предела
-        canvas.move(rectangle, 0, -5)  # Двигаем прямоугольник вверх
-        rectangle_y -= 5
-        # Запланировать следующий шаг анимации
-        root.after(20, move_rectangle_up)  # Каждый 20 мс продолжаем движение
-    else:
-        moving_down = True  # После достижения верхнего предела переключаем направление
-        button54.configure(state='normal')
-        
-c5 =0        
-def move_rectangle_down2():
+    global button2
+    global slider
+    global button3
+    global rectangle_y2
     global button2
     global slider
     global button3
     global rectangle_y2
     global c5
-    if rectangle_y2 < 100:  # Проверка на достижение нижнего предела
-        canvas.move(rectangle2, 0, 5)  # Двигаем прямоугольник вниз
-        rectangle_y2 += 5
+    global b2
+    global a2
+    global rectangle_y3
+    global b 
+    global a
+    global b1
+    global a1
+    global b2
+    global a2
+    global b3
+    global b4
+    global a4
+    global button54
+    button54.configure(state='disabled')
+    global rectangle_y
+    
+    if rectangle_y > -151:
+        b2 -= 5
+        b1 -= 5
+        b -= 5
+        b3 -= 5
+        # Проверка на достижение верхнего предела
+        canvas.move(rectangle, 0, -5)
+        slider.place(x=a, y=b)  # Двигаем слайдер вниз
+        button2.place(x=a1, y=b1)
+        button34.place(x=a3, y=b3)
+        canvas.move(rectangle2, 0, -5)
+        canvas.move(rectangle3, 0, -5)
+        button3.place(x=a2, y=b2)
+        b4 -= 5
+        button54.place(x=a4, y=b4)
+        # Двигаем прямоугольник вверх
+        rectangle_y -= 5
+        rectangle_y2 -= 5
+        rectangle_y3 -= 5
+        
         # Запланировать следующий шаг анимации
-        root.after(20, move_rectangle_down2)  # Каждый 20 мс продолжаем движение
+        root.after(25, move_rectangle_up)  # Каждый 20 мс продолжаем движение
     else:
-        moving_down = False
+        moving_down = True  # После достижения верхнего предела переключаем направление
+        b4 = -5
+        button54.place(x=a4, y=b4)
+        button54.configure(state='normal')
         
-            
-        # После достижения нижнего предела переключаем направление
-        
-        
-c2  = 0
+
 def sound():
     global c2
     global button2
@@ -116,15 +209,15 @@ def sound():
     
     if button_text == "🔊" :
         button2.destroy()
-        button2 = ctk.CTkButton(root, text="🔈", command=sound, width=25, height=25, fg_color="dark grey", hover_color="grey54")
-        button2.place(x=325, y=106)
+        button2 = ctk.CTkButton(root, text="🔈", command=sound, width=26, height=25, fg_color="dark grey", hover_color="grey54")
+        button2.place(x=325, y=101)
         slider.set(0)
         value2 = 0
         w(value2)
     if button_text == "🔈" :
         button2.destroy()
         button2 = ctk.CTkButton(root, text="🔊", command=sound, width=20, height=25, fg_color="dark grey", hover_color="grey54")
-        button2.place(x=325, y=106)# После достижения нижнего предела переключаем направление
+        button2.place(x=325, y=101)# После достижения нижнего предела переключаем направление
         slider.set(50)
         value2 = 50
         w(value2)
@@ -134,103 +227,18 @@ def w(value1):
     global button2
     global value2
     value2 = int(value1)
+    value1 = value1 / 100
     pygame.mixer.music.set_volume(value1)
     if value2 > 0:
         button2.destroy()
         button2 = ctk.CTkButton(root, text="🔊", command=sound, width=20, height=25, fg_color="dark grey", hover_color="grey54")
-        button2.place(x=325, y=106)
+        button2.place(x=325, y=101)
     else:
         button2.destroy()
-        button2 = ctk.CTkButton(root, text="🔈", command=sound, width=25, height=25, fg_color="dark grey", hover_color="grey54")
-        button2.place(x=325, y=106)
+        button2 = ctk.CTkButton(root, text="🔈", command=sound, width=26, height=25, fg_color="dark grey", hover_color="grey54")
+        button2.place(x=325, y=101)
         
     print(value2)
-    
-        
-    
-def move_rectangle_up2():
-    
-    global rectangle_y2
-    if rectangle_y2 > -51:  # Проверка на достижение верхнего предела
-        canvas.move(rectangle2, 0, -5)  # Двигаем прямоугольник вверх
-        rectangle_y2 -= 5
-        # Запланировать следующий шаг анимации
-        root.after(20, move_rectangle_up2)  # Каждый 20 мс продолжаем движение
-    else:
-        moving_down = True  # После достижения верхнего предела переключаем направление
-        
-def move_rectangle_down3():
-    
-    global b2
-    global a2
-    global rectangle_y3
-    if rectangle_y3 < 10:  # Проверка на достижение нижнего предела
-        canvas.move(rectangle3, 0, 5)  # Двигаем прямоугольник вниз
-        rectangle_y3 += 5
-        b2 += 5
-        button3.place(x=a2, y=b2)
-        # Запланировать следующий шаг анимации
-        root.after(20, move_rectangle_down3)  # Каждый 20 мс продолжаем движение
-    else:
-        moving_down = False 
-        
-
-def move_rectangle_up3():
-    
-    global b2, a2
-    global rectangle_y3
-    if rectangle_y3 > -141:  # Проверка на достижение верхнего предела
-        canvas.move(rectangle3, 0, -5)  # Двигаем прямоугольник вверх
-        rectangle_y3 -= 5
-        b2 -= 5
-        
-        
-        button3.place(x=a2, y=b2)
-        # Запланировать следующий шаг анимации
-        root.after(20, move_rectangle_up3)  # Каждый 20 мс продолжаем движение
-    else:
-        moving_down = True 
-def move_rectangle_downs():
-    global b 
-    global a
-    global b1
-    global a1
-    global b2
-    global a2
-    # Используем глобальную переменную b
-    
-      # Установите нижний предел для перемещения
-    if b < 110:
-        b += 5
-        b1 += 5
-        
-        slider.place(x=a, y=b)  # Двигаем слайдер вниз
-        button2.place(x=a1, y=b1)
-        root.after(20, move_rectangle_downs)  # Запланировать следующий шаг
-    else:
-        moving_down = False
-        
-    
-def move_rectangle_ups():
-    global b
-    global b1
-    global a1
-    global a
-    global a2
-    global b2
-    # Используем глобальную переменную b
-    
-      # Установите нижний предел для перемещения
-    if b > -49:
-        b1 -= 5
-        b -= 5
-        
-        slider.place(x=a, y=b)  # Двигаем слайдер вниз
-        button2.place(x=a1, y=b1)
-        root.after(20, move_rectangle_ups)  # Запланировать следующий шаг
-    else:
-        moving_down = True
-
 def documentation():
     # URL для открытия
     url = "https://docs.google.com/presentation/d/17UeY4yW-GUTbcuSApVlCDRqIaByRzo4j/edit?usp=sharing&ouid=109776666387041742162&rtpof=true&sd=true"
@@ -294,8 +302,8 @@ def gbt(text1):#Создаём функцию которая будет восп
     label2.place(x=605, y=200)
     client = Client()# Создаем экземпляр клиента для работы с библиотекой g4f
     response = client.chat.completions.create(
-        model="gpt-3.5-turbo",
-        messages=[{"role": "user", "content": text1 + "?"}],# Формируем сообщение от пользователя, добавляя '?' в конец текста для уточнения
+        model="gpt-4o-mini",
+        messages=[{"role": "user", "content": text1 + ", ответь на русском языке"}],# Формируем сообщение от пользователя, добавляя '?' в конец текста для уточнения
     )
     label2 = ctk.CTkLabel(root, text="Вызов помошника \n \n                 O \n \n Анализ речи \n \n                 o \n \n Нейросеть \n \n                 o \n",text_color="black")
     label2.place(x=605, y=200)
@@ -312,52 +320,19 @@ def gbt(text1):#Создаём функцию которая будет восп
             root.after(100, lambda: threading.Thread(target=say, args=(True,text2, value2), daemon=True).start())
         
 synonyms = [
-    "создать",
-    "генерировать",
-    "вырабатывать",
-    "производить",
-    "разрабатывать",
-    "конструировать",
-    "формировать",
-    "изготавлять",
-    "выводить",
-    "вычислять"
-    "создай",
-    "сгенерируй",
-    "разработай",
-    "сконструируй",
-    "сформируй",
-    "изготовь",
+    "сгенерировать",
     "нарисуй",
     "нарисовать"
-    "напиши",
     "картинку",
     "изображение",
     "картину",
-    "минимализм",
-    "Создать",
-    "Генерировать",
-    "Вырабатывать",
-    "Производить",
-    "Разрабатывать",
-    "Конструировать",
-    "Формировать",
-    "Изготавлять",
-    "Выводить",
-    "Вычислять"
-    "Создай",
-    "Сгенерируй",
-    "Разработай",
-    "Сконструируй",
-    "Сформируй",
-    "Изготовь",
     "Нарисуй",
     "Нарисовать"
-    "Напиши",
     "Картинку",
     "Изображение",
     "Картину",
-    "Минимализм"
+    "Сгенерировать картинку",
+    "Сгенерируй картинку"
     ]    
 
 
@@ -365,6 +340,21 @@ synonyms = [
 
 def micro():# 
     global synonyms
+    global audio_path1
+    global a3
+    global button34
+    global b3
+    try:
+        if pygame.mixer.music.get_busy(): 
+            pygame.mixer.music.stop()
+        pygame.mixer.music.load("12345.wav")
+        pygame.mixer.music.play()
+        button34.destroy()
+        button34 = ctk.CTkButton(root, text="▶", command=not_say, width=25, height=25, fg_color="dark grey", hover_color="grey54")
+        button34.place(x=a3, y=b3)
+        button34.configure(state='disabled')
+    except Exception as e:
+        pass
     # Создаем метку для отображения состояния работы помощника
     label2 = ctk.CTkLabel(root, text="Вызов помошника \n \n                 o \n \n Анализ речи \n \n                 O \n \n Нейросеть \n \n                 o \n",text_color="black")
     label2.place(x=605, y=200)
@@ -404,6 +394,7 @@ def micro():#
        
 
 def micro2():
+    
     recognizer = sr.Recognizer()# Создаем экземпляр распознавателя речи
     try:
         with sr.Microphone() as source:# Используем микрофон в качестве источника звука
@@ -461,7 +452,7 @@ def get_input_text():
 def picture(text8):
     number = random.randint(1000, 99999)
     if __name__ == '__main__':
-        api = Text2ImageAPI('', '', '')
+        api = Text2ImageAPI('https://api-key.fusionbrain.ai/', '6E1F29727EE466DDD18BB8122CF04C53', 'E3B2F326F6B9FF7FCDC26B1150277CAF')
         model_id = api.get_model()
         uuid = api.generate(text8, model_id)
         images = api.check_generation(uuid)
@@ -495,49 +486,94 @@ def run_jarvis():
         
         
 
-        
+q1 = True       
 def say(flag, user_input, value3 ):
-    
-    if flag == True:
-        
+    global q1
+    if flag == True :
         number1 = random.randint(1000, 99999)
-        mp = ".mp3"
+        mp = ".wav"
         sav = f"{number1}{mp}"
-# Текст для синтеза
         
-
+        
 # Синтез речи
-        tts = gTTS(text=user_input, lang='ru')
-        tts.save(sav)
-        button34.configure(state='normal')
-        pygame.mixer.music.load(sav)
+        device = torch.device('cpu')
+        torch.set_num_threads(4)
+
+# Задаем имя файла модели
+        local_file = 'model.pt'
+
+# Загружаем модель, если она еще не загружена
+        if not os.path.isfile(local_file):
+            torch.hub.download_url_to_file('https://models.silero.ai/models/tts/ru/v4_ru.pt',
+                                             local_file)
+
+# Загружаем модель TTS
+        model = torch.package.PackageImporter(local_file).load_pickle("tts_models", "model")
+        model.to(device)
+
+# Пользовательский ввод текста
+
+        example_text = user_input
+        sample_rate = 24000
+        speaker = 'eugene'
+
+# Указываем имя файла для сохранения
+         # Здесь задайте желаемое имя файла
+
+# Генерируем аудио и сохраняем в WAV с указанным именем
+        audio_path = model.save_wav(text=example_text,
+                                     speaker=speaker,
+                                     sample_rate=sample_rate,
+                                     audio_path=sav
+                                     ) 
+        print(audio_path)
+        
+        pygame.mixer.music.load(audio_path)
         pygame.mixer.music.play()
         while True:
             if pygame.mixer.music.get_busy():  # Проверка, играет ли музыка
                 print("Музыка играет...")
-            else:
+                button34.configure(state='normal')
+            if q1 != False and not pygame.mixer.music.get_busy():
                 print("Музыка не играет.")
-                button34.configure(state='disabled') 
-                break  # Выход из цикла, если музыка не играет
-            time.sleep(1)  # Пауза, чтобы не перегружать процессор 
+                button34.configure(state='disabled')
+                pygame.mixer.music.stop()
+                break
+            time.sleep(1)  # Пауза, чтобы не перегружать процессор
+
 def not_say():
-    pygame.mixer.music.stop()
-    button34.configure(state='disabled')  
-    
-                
+    global q1
+    global button34
+    if q1 == True:
+        pygame.mixer.music.pause()
+        q1 = False
+        button34.destroy()
+        button34 = ctk.CTkButton(root, text="∎", command=not_say, width=20, height=25, fg_color="dark grey", hover_color="grey54")
+        button34.place(x=353, y=101)
+    else:
+        pygame.mixer.music.unpause()
+        q1 = True
+        button34.destroy()
+        button34 = ctk.CTkButton(root, text="▶", command=not_say, width=25, height=25, fg_color="dark grey", hover_color="grey54")
+        button34.place(x=353, y=101)
 
 root = ctk.CTk()
 root.title("Джарвис")  # устанавливаем заголовок окна
-root.geometry("750x600")  # Размер окна
+root.geometry("750x600")
+customtkinter.set_default_color_theme("blue")
+customtkinter.set_appearance_mode("light")
 a = 110
-b = -49
+b = -45
 # Создаем слайдер
 a1 = 325
 a2 = 714
 b1 = -49
-b2 = -141
+b2 = -137
 #кнопка для изменения значения виджетов
-
+a3 = 353
+b3 = -49
+a4 = 5
+b4 = -5
 canvas = tk.Canvas(root,bg="grey92", width=750, height=150, highlightthickness=0)
 canvas.pack(anchor="n")
 
@@ -547,7 +583,8 @@ slider.place(x=a, y=b)
 slider.set(0)
 button2 = ctk.CTkButton(root, text="🔈", command=sound, width=26, height=25, fg_color="dark grey", hover_color="grey")
 button2.place(x=a1, y=b1)# После достижения нижнего предела переключаем направление
-
+button34 = ctk.CTkButton(root, text="▶", command=not_say, width=25, height=25, fg_color="dark grey", hover_color="grey")
+button34.place(x=a3, y=b3)
 # Создаем прямоугольник на канвасе
 # После достижения нижнего предела переключаем направление
 button3 = ctk.CTkButton(root, text="?", command=documentation, width=25, height=25, fg_color="dark grey", hover_color="grey")
@@ -556,14 +593,14 @@ rectangle_y = -150  # Начальная позиция Y
 rectangle = canvas.create_rectangle(750, rectangle_y, 0, rectangle_y + 149, fill="light grey")
 
 rectangle_y2 = -51  # Начальная позиция Y
-rectangle2 = canvas.create_rectangle(360, rectangle_y2, 100, rectangle_y2 + 28, fill="grey93")
+rectangle2 = canvas.create_rectangle(390, rectangle_y2, 100, rectangle_y2 + 28, fill="grey93")
 rectangle_y3 = -141  # Начальная позиция Y
 rectangle3 = canvas.create_rectangle(740, rectangle_y3, 710, rectangle_y3 + 30, fill="grey93")
 moving_down = True  # Изначально прямоугольник будет двигаться вниз
 
-
-button54 = ctk.CTkButton(root, text="Настройки", command=toggle_rectangle, width=100, height=30, fg_color="dark grey", hover_color="grey")
-button54.place(x=640, y=550)# После достижения нижнего предела переключаем направление
+custom_font = ("Helvetica", 16)
+button54 = ctk.CTkButton(root, text="★", command=toggle_rectangle, width=30, height=30, fg_color="grey96", hover_color="grey100", text_color="red",text_color_disabled="red", font=custom_font)
+button54.place(x=a4, y=b4)# После достижения нижнего предела переключаем направление
 #текстовый виджет для вывода ответа функции - gbt()
 text_widget = ctk.CTkTextbox(root, width=505, height=300)
 
@@ -574,14 +611,13 @@ label2 = ctk.CTkLabel(root, text="Вызов помошника \n \n           
 label2.place(x=605, y=200)
 
 #поле для ввода вопросов
-entry = ctk.CTkEntry(root, placeholder_text="Задайте вопрос", width=450, height=25)
+entry = ctk.CTkEntry(root, placeholder_text="Задайте вопрос", width=479, height=25)
 entry.place(x=65, y=184)
 
 #кнопка для отправки запросов
 button = ctk.CTkButton(root, text="🔍", command=get_input_text, width=25, height=25, fg_color="dark grey", hover_color="grey")
-button.place(x=517, y=184)
-button34 = ctk.CTkButton(root, text="🤐", command=not_say, width=25, height=25, fg_color="dark grey", hover_color="grey")
-button34.place(x=545, y=184)
+button.place(x=544, y=184)
+
 # Создаем кнопку
 button34.configure(state='disabled')
 
@@ -590,4 +626,6 @@ threading.Thread(target=run_jarvis, daemon=True).start()
 
 # Запуск главного цикла приложения
 root.mainloop()
+
+
 
