@@ -17,7 +17,6 @@ import customtkinter  # <- import the CustomTkinter module
 import customtkinter as ctk
 import time
 import webbrowser
-
 from gtts import gTTS
 
 import random
