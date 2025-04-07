@@ -528,31 +528,45 @@ def get_input_text():
         
     
 def picture(text8):
-    number = random.randint(1000, 99999)
-    if __name__ == '__main__':
+    # Генерируем случайное число для создания уникального имени файла
+    number = random.randint(1000, 99999)  
+    
+    if __name__ == '__main__':  # Проверяем, что код выполняется как основная программа
+        # Инициализируем API для генерации изображений
         api = Text2ImageAPI('https://api-key.fusionbrain.ai/', '6E1F29727EE466DDD18BB8122CF04C53', 'E3B2F326F6B9FF7FCDC26B1150277CAF')
-        model_id = api.get_model()
-        uuid = api.generate(text8, model_id)
-        images = api.check_generation(uuid)
+        
+        # Получаем идентификатор модели для генерации изображений
+        model_id = api.get_model()  
+        
+        # Генерируем изображение на основе текста
+        uuid = api.generate(text8, model_id)  
+        
+        # Проверяем статус генерации изображения
+        images = api.check_generation(uuid)  
     
         # Здесь image_base64 - это строка с данными изображения в формате base64
-        image_base64 = images[0]  # Получаем первую картинку
+        image_base64 = images[0]  # Получаем первую картинку из списка
+        
         # Декодируем строку base64 в бинарные данные
-        image_data = base64.b64decode(image_base64)
-        string2 = ".jpg"
-        number = str(number)
-        combined_string = f"{number}{string2}"  # Убираем пробел для имени файла
-        label2 = ctk.CTkLabel(root, text="Вызов помошника \n \n                 O \n \n Анализ речи \n \n                 o \n \n Нейросеть \n \n                 o \n",text_color="black")
-        label2.place(x=605, y=200)
+        image_data = base64.b64decode(image_base64)  
+        
+        string2 = ".jpg"  # Определяем расширение файла
+        number = str(number)  # Преобразуем число в строку
+        
+        # Формируем уникальное имя файла для сохранения изображения
+        combined_string = f"{number}{string2}"  
+        
+        # Создаем и размещаем метку с информацией о вызове помощника
+        label2 = ctk.CTkLabel(root, text="Вызов помощника \n \n                 O \n \n Анализ речи \n \n                 o \n \n Нейросеть \n \n                 o \n", text_color="black")
+        label2.place(x=605, y=200)  
     
-    # Открываем файл для записи бинарных данных изображения
+        # Открываем файл для записи бинарных данных изображения
         with open(combined_string, "wb") as file:
-            file.write(image_data)
+            file.write(image_data)  # Записываем данные изображения в файл
     
-    # Открываем и показываем сгенерированное изображение
+        # Открываем и показываем сгенерированное изображение с помощью PIL
         img = Image.open(combined_string)  # Используем PIL для открытия изображения
-        img.show()  # Показываем изображение
-    
+        img.show()  # Показываем изображение на экране
     
     
 def run_jarvis():
