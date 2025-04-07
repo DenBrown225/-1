@@ -377,58 +377,76 @@ synonyms = [
 ]
 
 
-def micro():# 
+def micro():
+    # Объявляем глобальные переменные, которые будут использоваться в функции
     global synonyms
     global audio_path1
     global a3
     global button34
     global b3
+
     try:
+        # Если музыка уже играет, останавливаем её
         if pygame.mixer.music.get_busy(): 
             pygame.mixer.music.stop()
+        
+        # Загружаем и воспроизводим аудиофайл
         pygame.mixer.music.load("12345.wav")
         pygame.mixer.music.play()
+
+        # Удаляем старую кнопку и создаем новую для воспроизведения аудио
         button34.destroy()
         button34 = ctk.CTkButton(root, text="▶", command=not_say, width=25, height=25, fg_color="dark grey", hover_color="grey54")
         button34.place(x=a3, y=b3)
-        button34.configure(state='disabled')
+        button34.configure(state='disabled')  # Делаем кнопку неактивной
+
     except Exception as e:
-        pass
+        pass  # Игнорируем любые ошибки при воспроизведении аудио
+
     # Создаем метку для отображения состояния работы помощника
-    label2 = ctk.CTkLabel(root, text="Вызов помошника \n \n                 o \n \n Анализ речи \n \n                 O \n \n Нейросеть \n \n                 o \n",text_color="black")
+    label2 = ctk.CTkLabel(root, text="Вызов помошника \n \n                 o \n \n Анализ речи \n \n                 O \n \n Нейросеть \n \n                 o \n", text_color="black")
     label2.place(x=605, y=200)
-    
-    text4 = ""# Инициализируем переменную для хранения распознанного текста
-    recognizer = sr.Recognizer()# Создаем экземпляр распознавателя речи
+
+    text4 = ""  # Инициализируем переменную для хранения распознанного текста
+    recognizer = sr.Recognizer()  # Создаем экземпляр распознавателя речи
+
     try:
-        with sr.Microphone() as source:# Используем микрофон в качестве источника звука
+        with sr.Microphone() as source:  # Используем микрофон в качестве источника звука
             print("Скажите что-нибудь:")
-            audio_data = recognizer.listen(source)# Слушаем звук с микрофона
-            text4 = recognizer.recognize_google(audio_data, language="ru-RU")# Распознаем речь с помощью Google Speech Recognition
+            audio_data = recognizer.listen(source)  # Слушаем звук с микрофона
+            
+            # Распознаем речь с помощью Google Speech Recognition
+            text4 = recognizer.recognize_google(audio_data, language="ru-RU")  
             print("Вы сказали: " + text4)
-    except sr.UnknownValueError:# Обработка ошибки, если не удалось распознать речь
-        label2 = ctk.CTkLabel(root, text="Вызов помошника \n \n                 O \n \n Анализ речи \n \n                 o \n \n Нейросеть \n \n                 o \n",text_color="black")
+
+    except sr.UnknownValueError:  # Обработка ошибки, если не удалось распознать речь
+        label2 = ctk.CTkLabel(root, text="Вызов помошника \n \n                 O \n \n Анализ речи \n \n                 o \n \n Нейросеть \n \n                 o \n", text_color="black")
         label2.place(x=605, y=200)
         print("Извините, не могу распознать речь")
-    except sr.RequestError as e:# Обработка ошибки запроса, если возникла проблема со связью с сервисом
+
+    except sr.RequestError as e:  # Обработка ошибки запроса к сервису распознавания речи
         print("Ошибка при выполнении запроса к сервису Google Speech Recognition: {0}".format(e))
-    except Exception as e: # Обработка любых других возможных ошибок
+
+    except Exception as e:  # Обработка любых других возможных ошибок
         print("Произошла ошибка: {0}".format(e))
-    text_list = text4.split()
-    
-    a = False
+
+    text_list = text4.split()  # Разбиваем распознанный текст на слова
+
+    a = False  # Флаг для проверки наличия синонимов в распознанном тексте
+
     for i in range(len(synonyms)):
-        if synonyms[i] in text_list:
-            label2 = ctk.CTkLabel(root, text="Вызов помошника \n \n                 o \n \n Анализ речи \n \n                 o \n \n Нейросеть \n \n                 O \n",text_color="black")
+        if synonyms[i] in text_list:  # Проверяем наличие синонимов в списке слов
+            label2 = ctk.CTkLabel(root, text="Вызов помошника \n \n                 o \n \n Анализ речи \n \n                 o \n \n Нейросеть \n \n                 O \n", text_color="black")
             label2.place(x=605, y=200)
-            a = True
+            a = True  # Устанавливаем флаг в True, если найден синоним
+            
+            # Запускаем функцию picture в отдельном потоке с распознанным текстом
             gbt_thread = threading.Thread(target=picture, args=(text4,), daemon=True).start()
             
-            return ""
-            break
+            return ""  # Завершаем выполнение функции после нахождения синонима
+
     if a == False:
-        gbt2(text4)
-        
+        gbt2(text4)  # Если синонимы не найдены, вызываем функцию gbt2 с распознанным текстом
         
        
 
