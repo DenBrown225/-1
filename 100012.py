@@ -327,48 +327,54 @@ class Text2ImageAPI:
 
 
 
-def gbt(text1):#Создаём функцию которая будет воспроизводить ответ с помощью библиотеки g4f.client 
-    global jk
-    
-    jk = True
-    label2 = ctk.CTkLabel(root, text="Вызов помошника \n \n                 o \n \n Анализ речи \n \n                 o \n \n Нейросеть \n \n                 O \n",text_color="black")
-    label2.place(x=605, y=200)
-    client = Client()# Создаем экземпляр клиента для работы с библиотекой g4f
+def gbt(text1):
+    # Создаем функцию, которая будет воспроизводить ответ с помощью библиотеки g4f.client
+    global jk  # Объявляем переменную jk как глобальную
+
+    jk = True  # Устанавливаем флаг, указывающий на то, что процесс активен
+    # Создаем метку для отображения статуса вызова помощника
+    label2 = ctk.CTkLabel(root, text="Вызов помошника \n \n                 o \n \n Анализ речи \n \n                 o \n \n Нейросеть \n \n                 O \n", text_color="black")
+    label2.place(x=605, y=200)  # Размещаем метку на экране
+
+    client = Client()  # Создаем экземпляр клиента для работы с библиотекой g4f
     response = client.chat.completions.create(
-        model="gpt-4o-mini",
-        messages=[{"role": "user", "content": text1 + ", ответь на русском языке"}],# Формируем сообщение от пользователя, добавляя '?' в конец текста для уточнения
+        model="gpt-4o-mini",  # Указываем модель для генерации ответа
+        messages=[{"role": "user", "content": text1 + ", ответь на русском языке"}],  # Формируем сообщение от пользователя, добавляя указание отвечать на русском языке
     )
-    label2 = ctk.CTkLabel(root, text="Вызов помошника \n \n                 O \n \n Анализ речи \n \n                 o \n \n Нейросеть \n \n                 o \n",text_color="black")
+
+    # Обновляем метку статуса после получения ответа
+    label2 = ctk.CTkLabel(root, text="Вызов помошника \n \n                 O \n \n Анализ речи \n \n                 o \n \n Нейросеть \n \n                 o \n", text_color="black")
     label2.place(x=605, y=200)
-    
-    
-    text2 = response.choices[0].message.content # Возвращаем текст ответа, полученного от модели
-      # Получаем ввод пользователя
-    text_widget.delete("1.0", tk.END)
-    text_widget.insert(tk.END, text2)  # Вставляем пользовательский ввод
+
+    text2 = response.choices[0].message.content  # Получаем текст ответа от модели
+
+    # Получаем ввод пользователя из текстового виджета
+    text_widget.delete("1.0", tk.END)  # Очищаем текстовый виджет
+    text_widget.insert(tk.END, text2)  # Вставляем ответ от модели в текстовый виджет
+
     text3 = text_widget.get("1.0", tk.END)  # Получаем весь текст из виджета
-    jk = False
-    if len(text3) > 3:  # Проверяем длину текста
-                # Запускаем say в отдельном потоке
-            root.after(100, lambda: threading.Thread(target=say, args=(True,text2, value2), daemon=True).start())
-        
+    jk = False  # Сбрасываем флаг активности
+
+    if len(text3) > 3:  # Проверяем длину текста (должна быть больше 3 символов)
+        # Запускаем функцию say в отдельном потоке для воспроизведения текста
+        root.after(100, lambda: threading.Thread(target=say, args=(True, text2, value2), daemon=True).start())
+
+# Список синонимов для команды генерации изображений
 synonyms = [
     "сгенерировать",
     "нарисуй",
-    "нарисовать"
+    "нарисовать",
     "картинку",
     "изображение",
     "картину",
     "Нарисуй",
-    "Нарисовать"
+    "Нарисовать",
     "Картинку",
     "Изображение",
     "Картину",
     "Сгенерировать картинку",
     "Сгенерируй картинку"
-    ]    
-
-
+]
 
 
 def micro():# 
