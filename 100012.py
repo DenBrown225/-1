@@ -494,28 +494,35 @@ def gbt2(text6):
     # Запускаем функцию gbt в отдельном потоке с переданным текстом
     gbt_thread = threading.Thread(target=gbt, args=(text6,), daemon=True).start()
 def get_input_text():
-    global synonyms
+    global synonyms  # Объявляем переменную synonyms как глобальную для использования в других частях программы
     
-     #Объявляем переменную user_input как глобальную для использования в других частях программы
-    text7 = entry.get()# Получаем текст, введенный пользователем, из переменной entry_var
-    print(text7)
-    text_widget.delete("1.0", tk.END)# Очищаем содержимое виджета Text
-    text_list = text7.split()
+    # Получаем текст, введенный пользователем, из виджета entry
+    text7 = entry.get()  
+    print(text7)  # Выводим введенный текст в консоль
     
-    a = False
+    text_widget.delete("1.0", tk.END)  # Очищаем содержимое виджета Text
+    
+    # Разбиваем введенный текст на слова и сохраняем в список
+    text_list = text7.split()  
+    
+    a = False  # Флаг для отслеживания наличия синонимов в тексте
+    
+    # Проверяем наличие синонимов в введенном тексте
     for i in range(len(synonyms)):
-        if synonyms[i] in text_list:
-            a = True
-            label2 = ctk.CTkLabel(root, text="Вызов помошника \n \n                 o \n \n Анализ речи \n \n                 o \n \n Нейросеть \n \n                 O \n",text_color="black")
-            label2.place(x=605, y=200)
+        if synonyms[i] in text_list:  # Если найден синоним
+            a = True  # Устанавливаем флаг в True
+            
+            # Создаем и размещаем метку с информацией о вызове помощника
+            label2 = ctk.CTkLabel(root, text="Вызов помощника \n \n                 o \n \n Анализ речи \n \n                 o \n \n Нейросеть \n \n                 O \n", text_color="black")
+            label2.place(x=605, y=200)  # Размещаем метку на экране
+            
+            # Запускаем функцию picture в отдельном потоке с переданным текстом
             gbt_thread = threading.Thread(target=picture, args=(text7,), daemon=True).start()
-            break
+            break  # Выходим из цикла, если найден хотя бы один синоним
 
-    if a == False:  # Если ни один из синонимов не найден
-    # Запуск gbt() в отдельном потоке
-        
-          # Запускаем поток
-        gbt2(text7)
+    if not a:  # Если ни один из синонимов не найден
+        # Запускаем gbt() в отдельном потоке с переданным текстом
+        gbt2(text7)  # Запускаем поток для обработки текста без синонимов
         
 
         
