@@ -15,7 +15,6 @@ import random
 from PIL import Image
 import customtkinter  # <- import the CustomTkinter module
 import customtkinter as ctk
-
 import time
 import webbrowser
 
