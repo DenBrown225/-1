@@ -273,43 +273,57 @@ canvas1 = None  # Инициализируем переменную canvas1 ка
 
 class Text2ImageAPI:
     def __init__(self, url, api_key, secret_key):
-        self.URL = url
+        # Инициализация объекта API с URL и ключами аутентификации
+        self.URL = url  # Сохраняем базовый URL API
         self.AUTH_HEADERS = {
-            'X-Key': f'Key {api_key}',
-            'X-Secret': f'Secret {secret_key}',
+            'X-Key': f'Key {api_key}',  # Заголовок с API ключом
+            'X-Secret': f'Secret {secret_key}',  # Заголовок с секретным ключом
         }
         
     def get_model(self):
+        # Получение списка доступных моделей из API
         response = requests.get(self.URL + 'key/api/v1/models', headers=self.AUTH_HEADERS)
-        data = response.json()
-        return data[0]['id']
+        data = response.json()  # Преобразуем ответ в JSON формат
+        return data[0]['id']  # Возвращаем ID первой модели в списке
     
     def generate(self, prompt, model, images=1, width=1024, height=1024):
+        # Генерация изображения на основе текстового запроса (prompt)
+        
+        # Параметры для генерации изображения
         params = {
-            "type": "GENERATE",
-            "numImages": images,
-            "width": width,
-            "height": height,
+            "type": "GENERATE",  # Тип операции
+            "numImages": images,  # Количество изображений для генерации
+            "width": width,  # Ширина изображения
+            "height": height,  # Высота изображения
             "generateParams": {
-                "query": f"{prompt}"
+                "query": f"{prompt}"  # Текстовый запрос для генерации изображения
             }
         }
+        
+        # Формируем данные для POST-запроса
         data = {
-            'model_id': (None, model),
-            'params': (None, json.dumps(params), 'application/json')
+            'model_id': (None, model),  # ID модели для генерации
+            'params': (None, json.dumps(params), 'application/json')  # Параметры в формате JSON
         }
+        
+        # Отправляем POST-запрос на генерацию изображения
         response = requests.post(self.URL + 'key/api/v1/text2image/run', headers=self.AUTH_HEADERS, files=data)
-        data = response.json()
-        return data['uuid']
+        
+        data = response.json()  # Преобразуем ответ в JSON формат
+        return data['uuid']  # Возвращаем уникальный идентификатор запроса на генерацию
     
     def check_generation(self, request_id, attempts=10, delay=10):
-        while attempts > 0:
+        # Проверка статуса генерации изображения по уникальному идентификатору запроса
+        
+        while attempts > 0:  # Пока есть попытки проверки статуса
             response = requests.get(self.URL + 'key/api/v1/text2image/status/' + request_id, headers=self.AUTH_HEADERS)
-            data = response.json()
-            if data['status'] == 'DONE':
-                return data['images']
-            attempts -= 1
-            time.sleep(delay)
+            data = response.json()  # Преобразуем ответ в JSON формат
+            
+            if data['status'] == 'DONE':  # Если статус завершен
+                return data['images']  # Возвращаем сгенерированные изображения
+            
+            attempts -= 1  # Уменьшаем количество оставшихся попыток
+            time.sleep(delay)  # Ждем перед следующей проверкой статуса
 
 
 
