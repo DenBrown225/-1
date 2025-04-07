@@ -13,136 +13,110 @@ import base64
 import requests
 import random
 from PIL import Image
-import customtkinter  # <- import the CustomTkinter module
+import customtkinter  # Импортируем модуль CustomTkinter для создания пользовательского интерфейса
 import customtkinter as ctk
 import time
 import webbrowser
-from gtts import gTTS
+from gtts import gTTS  # Импортируем библиотеку для текстового синтеза речи (TTS)
 import random
 import tkinter as tk
-from tkinter import filedialog
-import pygame
+from tkinter import filedialog  # Импортируем для работы с диалогами выбора файлов
+import pygame  # Импортируем Pygame для работы с аудио и мультимедиа
 import wave
-# Инициализация Pygame
-pygame.mixer.init()
-def say2():        
-    sav1 = "12345.wav"
-    device = torch.device('cpu')
-    torch.set_num_threads(4)
 
-# Задаем имя файла модели
+# Инициализация Pygame для работы с аудио
+pygame.mixer.init()
+
+def say2():        
+    sav1 = "12345.wav"  # Имя файла, в который будет сохранено аудио
+    device = torch.device('cpu')  # Устанавливаем устройство (CPU)
+    torch.set_num_threads(4)  # Устанавливаем количество потоков
+
+    # Задаем имя файла модели TTS (Text-to-Speech)
     local_file = 'model.pt'
 
-# Загружаем модель, если она еще не загружена
+    # Загружаем модель, если она еще не загружена
     if not os.path.isfile(local_file):
         torch.hub.download_url_to_file('https://models.silero.ai/models/tts/ru/v4_ru.pt',
                                         local_file)
 
-# Загружаем модель TTS
+    # Загружаем модель TTS из локального файла
     model = torch.package.PackageImporter(local_file).load_pickle("tts_models", "model")
-    model.to(device)
+    model.to(device)  # Переносим модель на заданное устройство
 
-# Пользовательский ввод текста
-
+    # Текст, который будет озвучен пользователем (можно заменить на ввод пользователя)
     example_text = "Да сэр?"
-    sample_rate = 24000
-    speaker = 'eugene'
+    sample_rate = 24000  # Частота дискретизации аудио
+    speaker = 'eugene'  # Выбор голосового синтезатора
 
-# Указываем имя файла для сохранения
-         # Здесь задайте желаемое имя файла
-
-# Генерируем аудио и сохраняем в WAV с указанным именем
+    # Генерируем аудио и сохраняем в WAV файл с указанным именем
     audio_path1 = model.save_wav(text=example_text,
-                                speaker=speaker,
-                                sample_rate=sample_rate,
-                                audio_path=sav1
-                                 ) 
-    
-    
-                
+                                  speaker=speaker,
+                                  sample_rate=sample_rate,
+                                  audio_path=sav1)
+
+# Запускаем функцию say2 в отдельном потоке, чтобы не блокировать основной поток программы 
 threading.Thread(target=say2, daemon=True).start()
 
-c = 0
+c = 0  # Счетчик для отслеживания состояния кнопки
+
 def toggle_rectangle():
-    global b
-    global b1
-    global moving_down
-    global c
-    global b2
-    global b4
-    c +=1
+    global b, b1, moving_down, c, b2, b4  # Объявляем глобальные переменные
     
-    if c % 2 != 0 :
+    c += 1  # Увеличиваем счетчик при каждом вызове функции
+    
+    if c % 2 != 0:  # Если счетчик нечетный, двигаем прямоугольник вниз 
         if c > 1:
-            b4 = -5
-            button54.place(x=a4, y=b4)
+            b4 = -5  # Устанавливаем начальную позицию кнопки вниз 
+            button54.place(x=a4, y=b4)  
         else:
-            b4 = 0
+            b4 = 0  
             button54.place(x=a4, y=b4)
         
-        move_rectangle_down()
+        move_rectangle_down()  # Запускаем движение прямоугольника вниз
         
-        
-        
-    else:# Двигаем прямоугольник вверх
-        b4 = 150
-        button54.place(x=a4, y=b4)
+    else:  # Если счетчик четный, двигаем прямоугольник вверх 
+        b4 = 150  
+        button54.place(x=a4, y=b4)  
         move_rectangle_up() 
-        
+
 def move_rectangle_down():
-    global button2
-    global slider
-    global button3
-    global rectangle_y2
-    global button2
-    global slider
-    global rectangle_y2
-    global c5
-    global b2
-    global a2
-    global rectangle_y3
-    global b 
-    global a
-    global b1
-    global a1
-    global b2
-    global a2
-    global b3
-    global a4
-    global b4
+    global button2, slider, button3, rectangle_y2, b2, a2, rectangle_y3  
+    global b, a1, b1, a3, b3, a4, b4  
     global button54
-    button54.configure(state='disabled')
+    
+    button54.configure(state='disabled')  # Отключаем кнопку во время движения
+    
     global rectangle_y
     
-    if rectangle_y < 0:
-        b2 += 5
-        b1 += 5
-        b += 5
-        b3 += 5
-        # Проверка на достижение нижнего предела
-        canvas.move(rectangle, 0, 5)
-        slider.place(x=a, y=b)  # Двигаем слайдер вниз
-        button2.place(x=a1, y=b1)
-        button34.place(x=a3, y=b3)
-        b4 += 5
-        button54.place(x=a4, y=b4)
-        canvas.move(rectangle2, 0, 5)
-        canvas.move(rectangle3, 0, 5)
-        # Двигаем прямоугольник вверх
-        rectangle_y += 5
-        rectangle_y2 += 5
-        rectangle_y3 += 5
-        # Двигаем прямоугольник вниз
-        button3.place(x=a2, y=b2)
-        
-        # Запланировать следующий шаг анимации
-        root.after(25, move_rectangle_down)  # Каждый 20 мс продолжаем движение
-    else:
-        moving_down = False  # После достижения нижнего предела переключаем направление
-        b4 = 150
-        button54.place(x=a4, y=b4)
-        button54.configure(state='normal')
+    if rectangle_y < 0:  # Проверяем достиг ли прямоугольник нижнего предела 
+        b2 += 5  
+        b1 += 5  
+        b += 5  
+        b3 += 5  
 
+        canvas.move(rectangle, 0, 5)   # Двигаем основной прямоугольник вниз 
+        slider.place(x=a, y=b)          # Двигаем слайдер вниз 
+        button2.place(x=a1, y=b1)       # Двигаем кнопку вниз 
+        button34.place(x=a3, y=b3)      # Двигаем другую кнопку вниз 
+        b4 += 5  
+        button54.place(x=a4, y=b4)      # Двигаем кнопку вниз 
+        
+        canvas.move(rectangle2, 0, 5)   # Двигаем второй прямоугольник вниз 
+        canvas.move(rectangle3, 0, 5)   # Двигаем третий прямоугольник вниз 
+        
+        rectangle_y += 5                 # Обновляем координаты прямоугольников 
+        rectangle_y2 += 5  
+        rectangle_y3 += 5  
+
+        button3.place(x=a2, y=b2)       # Двигаем третью кнопку 
+
+        root.after(25, move_rectangle_down)   # Запланировать следующий шаг анимации через каждые 25 мс 
+    else:
+        moving_down = False   # После достижения нижнего предела переключаем направление движения 
+        b4 = 150  
+        button54.place(x=a4, y=b4)  
+        button54.configure(state='normal')   # Включаем кнопку обратно после завершения движения
 def move_rectangle_up():
     global button2
     global slider
