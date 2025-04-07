@@ -19,7 +19,6 @@ import time
 import webbrowser
 from gtts import gTTS
 import random
-
 import tkinter as tk
 from tkinter import filedialog
 import pygame
