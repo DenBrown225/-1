@@ -575,58 +575,56 @@ def run_jarvis():
         text8 = jarvis()# Вызываем функцию jarvis() и сохраняем полученный текст в text1
 
 q1 = True       
-def say(flag, user_input, value3 ):
-    global q1
-    if flag == True :
-        number1 = random.randint(1000, 99999)
-        mp = ".wav"
-        sav = f"{number1}{mp}"
-        
-        
-# Синтез речи
-        device = torch.device('cpu')
-        torch.set_num_threads(4)
+def say(flag, user_input, value3):
+    global q1  # Объявляем переменную q1 как глобальную для использования в других частях программы
+    if flag == True:  # Проверяем, установлен ли флаг в True
+        number1 = random.randint(1000, 99999)  # Генерируем случайное число для имени файла
+        mp = ".wav"  # Определяем расширение файла
+        sav = f"{number1}{mp}"  # Формируем имя файла для сохранения аудио
 
-# Задаем имя файла модели
+        # Синтез речи
+        device = torch.device('cpu')  # Устанавливаем устройство для выполнения (CPU)
+        torch.set_num_threads(4)  # Устанавливаем количество потоков
+
+        # Задаем имя файла модели
         local_file = 'model.pt'
 
-# Загружаем модель, если она еще не загружена
+        # Загружаем модель, если она еще не загружена
         if not os.path.isfile(local_file):
             torch.hub.download_url_to_file('https://models.silero.ai/models/tts/ru/v4_ru.pt',
-                                             local_file)
+                                             local_file)  # Скачиваем модель TTS
 
-# Загружаем модель TTS
+        # Загружаем модель TTS
         model = torch.package.PackageImporter(local_file).load_pickle("tts_models", "model")
-        model.to(device)
+        model.to(device)  # Переносим модель на заданное устройство
 
-# Пользовательский ввод текста
+        # Пользовательский ввод текста
+        example_text = user_input  # Текст, который будет синтезирован в речь
+        sample_rate = 24000  # Частота дискретизации аудио
+        speaker = 'eugene'  # Имя говорящего
 
-        example_text = user_input
-        sample_rate = 24000
-        speaker = 'eugene'
-
-# Указываем имя файла для сохранения
-         # Здесь задайте желаемое имя файла
-
-# Генерируем аудио и сохраняем в WAV с указанным именем
+        # Генерируем аудио и сохраняем в WAV с указанным именем
         audio_path = model.save_wav(text=example_text,
                                      speaker=speaker,
                                      sample_rate=sample_rate,
-                                     audio_path=sav
-                                     ) 
-        print(audio_path)
+                                     audio_path=sav) 
+                                     
+        print(audio_path)  # Выводим путь к сохраненному аудиофайлу
         
-        pygame.mixer.music.load(audio_path)
-        pygame.mixer.music.play()
-        while True:
+        pygame.mixer.music.load(audio_path)  # Загружаем аудиофайл в Pygame
+        pygame.mixer.music.play()  # Начинаем воспроизведение аудио
+        
+        while True:  # Бесконечный цикл для проверки состояния воспроизведения
             if pygame.mixer.music.get_busy():  # Проверка, играет ли музыка
-                print("Музыка играет...")
-                button34.configure(state='normal')
-            if q1 != False and not pygame.mixer.music.get_busy():
+                print("Музыка играет...")  
+                button34.configure(state='normal')  # Активируем кнопку, если музыка играет
+                
+            if q1 != False and not pygame.mixer.music.get_busy():  # Если q1 не False и музыка не играет
                 print("Музыка не играет.")
-                button34.configure(state='disabled')
-                pygame.mixer.music.stop()
-                break
+                button34.configure(state='disabled')  # Деактивируем кнопку, если музыка остановлена
+                pygame.mixer.music.stop()  # Останавливаем воспроизведение музыки
+                break  # Выходим из цикла
+            
             time.sleep(1)  # Пауза, чтобы не перегружать процессор
 
 def not_say():
