@@ -451,21 +451,31 @@ def micro():
        
 
 def micro2():
+    # Создаем экземпляр распознавателя речи
+    recognizer = sr.Recognizer()  
     
-    recognizer = sr.Recognizer()# Создаем экземпляр распознавателя речи
     try:
-        with sr.Microphone() as source:# Используем микрофон в качестве источника звука
-            print("Скажите Джарвис:")
-            audio_data = recognizer.listen(source)# Слушаем звук с микрофона
-            text5 = recognizer.recognize_google(audio_data, language="ru-RU")# Распознаем речь с помощью Google Speech Recognition
-    except sr.UnknownValueError:# Обработка ошибки, если не удалось распознать речь
-        text5 = " "
-        print("Извините, не могу распознать речь")
-    except sr.RequestError as e:# Обработка ошибки запроса, если возникла проблема со связью с сервисом
+        # Используем микрофон в качестве источника звука
+        with sr.Microphone() as source:  
+            print("Скажите Джарвис:")  # Подсказка для пользователя
+            
+            # Слушаем звук с микрофона и сохраняем его в audio_data
+            audio_data = recognizer.listen(source)  
+            
+            # Распознаем речь с помощью Google Speech Recognition
+            text5 = recognizer.recognize_google(audio_data, language="ru-RU")  
+            
+    except sr.UnknownValueError:  # Обработка ошибки, если не удалось распознать речь
+        text5 = " "  # Устанавливаем текст в пустую строку, если распознавание не удалось
+        print("Извините, не могу распознать речь")  # Сообщаем об ошибке пользователю
+
+    except sr.RequestError as e:  # Обработка ошибки запроса к сервису распознавания речи
         print("Ошибка при выполнении запроса к сервису Google Speech Recognition: {0}".format(e))
-    except Exception as e:# Обработка любых других возможных ошибок
+
+    except Exception as e:  # Обработка любых других возможных ошибок
         print("Произошла ошибка: {0}".format(e))
-    return text5#Возвращаем распознанный текст
+
+    return text5  # Возвращаем распознанный текст (или пустую строку в случае ошибки)
 
 def jarvis():
     text9 = " "#Создаём пустую переменную для хранения текста
