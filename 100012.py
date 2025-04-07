@@ -628,21 +628,26 @@ def say(flag, user_input, value3):
             time.sleep(1)  # Пауза, чтобы не перегружать процессор
 
 def not_say():
-    global q1
-    global button34
-    if q1 == True:
-        pygame.mixer.music.pause()
-        q1 = False
-        button34.destroy()
+    global q1  # Объявляем переменную q1 как глобальную для использования в других частях программы
+    global button34  # Объявляем переменную button34 как глобальную для использования в других частях программы
+    
+    if q1 == True:  # Если q1 равно True (музыка играет)
+        pygame.mixer.music.pause()  # Приостанавливаем воспроизведение музыки
+        q1 = False  # Устанавливаем q1 в False, чтобы указать, что музыка приостановлена
+        
+        # Удаляем текущую кнопку и создаем новую кнопку "∎" для остановки музыки
+        button34.destroy()  
         button34 = ctk.CTkButton(root, text="∎", command=not_say, width=20, height=25, fg_color="dark grey", hover_color="grey54")
-        button34.place(x=353, y=101)
-    else:
-        pygame.mixer.music.unpause()
-        q1 = True
-        button34.destroy()
-        button34 = ctk.CTkButton(root, text="▶", command=not_say, width=25, height=25, fg_color="dark grey", hover_color="grey54")
-        button34.place(x=353, y=101)
+        button34.place(x=353, y=101)  # Размещаем кнопку на экране
 
+    else:  # Если q1 не равно True (музыка приостановлена)
+        pygame.mixer.music.unpause()  # Возобновляем воспроизведение музыки
+        q1 = True  # Устанавливаем q1 в True, чтобы указать, что музыка играет
+        
+        # Удаляем текущую кнопку и создаем новую кнопку "▶" для воспроизведения музыки
+        button34.destroy()  
+        button34 = ctk.CTkButton(root, text="▶", command=not_say, width=25, height=25, fg_color="dark grey", hover_color="grey54")
+        button34.place(x=353, y=101)  # Размещаем кнопку на экране
 root = ctk.CTk()
 root.title("Джарвис")  # устанавливаем заголовок окна
 root.geometry("750x600")
